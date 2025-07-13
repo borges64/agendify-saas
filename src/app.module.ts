@@ -6,6 +6,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { User } from './user/entities/user.entity';
 import { UserModule } from './user/user.module';
+import { CompanyModule } from './company/company.module';
+import { EmployeeModule } from './employee/employee.module';
+import { PatientModule } from './patient/patient.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 
 @Module({
@@ -19,6 +23,10 @@ import { UserModule } from './user/user.module';
     }),
     UserModule,
     AuthModule,
+    CompanyModule,
+    EmployeeModule,
+    PatientModule,
+    AppointmentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
