@@ -24,8 +24,8 @@ export class UserService {
     return this.usersRepository.save(newUser);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll(): Promise<User[]> {
+      return this.usersRepository.find();
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

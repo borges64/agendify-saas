@@ -14,12 +14,18 @@ import { Company } from './company/entities/company.entity';
 import { Employee } from './employee/entities/employee.entity';
 import { Patient } from './patient/entities/patient.entity';
 import { Appointment } from './appointment/entities/appointment.entity';
+import { DashboardsModule } from './dashboards/dashboards.module';
+import { ConfigModule } from '@nestjs/config';
 
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env'
+    }),
     TypeOrmModule.forRoot({
-       type: 'sqlite', // <--- Mudado para 'sqlite'
+      type: 'sqlite', // <--- Mudado para 'sqlite'
       database: 'database.sqlite', // <--- Nome do arquivo .db na raiz do projeto
       entities: [
         User,
@@ -37,6 +43,7 @@ import { Appointment } from './appointment/entities/appointment.entity';
     EmployeeModule,
     PatientModule,
     AppointmentModule,
+    DashboardsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

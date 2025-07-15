@@ -2,6 +2,8 @@
 import { Controller, Post, Request, UseGuards, Get } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
+import { User } from 'src/user/entities/user.entity';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -14,9 +16,15 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(AuthGuard('jwt')) // Protege esta rota com JWT
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user; // Retorna o payload do token JWT
-  }
+getProfile(@Request() req: Request & { user: User }) {
+  console.log('Dados do usuário no req.user (backend):', req.user);
+  return {
+    id: req.user.id,
+    name: req.user.name,
+    email: req.user.email,
+    type: req.user.type,
+  };
+}
 }
