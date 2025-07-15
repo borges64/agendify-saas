@@ -7,10 +7,15 @@ import { User } from 'src/user/entities/user.entity';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { UserTypes } from 'src/common/user-type.enum';
 import { Roles } from 'src/auth/roles.decorator';
+import { UserService } from 'src/user/user.service';
+import { EmployeeService } from 'src/employee/employee.service';
 
 @Controller('dashboards')
 export class DashboardsController {
-  constructor(private readonly dashboardsService: DashboardsService) {}
+  constructor(
+    private readonly dashboardsService: DashboardsService, 
+    private readonly userService: UserService
+  ) {}
 
   @Post()
   create(@Body() createDashboardDto: CreateDashboardDto) {
@@ -36,10 +41,16 @@ export class DashboardsController {
   @UseGuards(JwtAuthGuard, RolesGuard) // Aplica JwtAuthGuard primeiro, depois RolesGuard
   @Roles(UserTypes.ADMIN) // Apenas usuários com type 'admin' podem acessar
   @Get('admin')
-  getAdminDashboard(@Req() req: Request & { user: User }) {
+  async getAdminDashboard(@Req() req: Request & { user: User }) {
+    const searchAllUsers = await this.userService.findAll()
+    const usersWithoutPass = searchAllUsers.map(user => {
+      const { password, ...rest } = user
+      return rest
+    })
     return {
       message: `Bem-vindo ao Dashboard de ADMIN, ${req.user.name}! Você tem acesso total.`,
       userType: req.user.type,
+      allUsers: usersWithoutPass
     };
   }
 
@@ -54,7 +65,7 @@ export class DashboardsController {
     //   employeeSpecificInfo = ` da empresa ID: ${req.user.employee.companyId}`;
     // }
     return {
-      message: `Bem-vindo ao Dashboard de Funcionário, ${req.user.name}${employeeSpecificInfo}!`,
+      message: `Bem-vindo ao Dashboard de Colaborador, ${req.user.name}${employeeSpecificInfo}!`,
       userType: req.user.type,
     };
   }
